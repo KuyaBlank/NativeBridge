@@ -1,0 +1,55 @@
+name : Build and Release NativeBridge
+
+on:
+  push:
+    branches: [ "main" ]
+  create:
+    tags:
+      - 'v*'
+
+env:
+  CARGO_TERM_COLOR: always
+  TARGET_ARCH: aarch64-unknown-linux-musl
+
+jobs:
+  build:
+    name: Build for Android (ARM64 Musl)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Rust Toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ env.TARGET_ARCH }}
+
+      - name: Install Cross (Cross-Compilation Tool)
+        run: cargo install cross
+
+      - name: Build Release Binary
+        run: cross build --release --target ${{ env.TARGET_ARCH }} --verbose
+
+      - name: Prepare Binaries
+        run: |
+          mkdir output
+          cp target/${{ env.TARGET_ARCH }}/release/bridge_client output/andro
+          ls -l output/
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: NativeBridge-Binaries
+          path: output/*
+
+      - name: Create Release
+        if: startswith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            output/bridge_server
+            output/andro
+          draft: false
+          prerelease: false
+          generate_release_notes: true

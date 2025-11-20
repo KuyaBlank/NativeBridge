@@ -1,0 +1,5 @@
+[workspace]
+members = [
+"bridge_server",
+"bridge_client"
+]
