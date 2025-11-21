@@ -109,7 +109,7 @@ andro "reboot"
 
 ## Potential Use Cases
 
-- **Hybrid Workflow:** Copy/Paste between Androi and Linux seamlessly.
+- **Hybrid Workflow:** Copy/Paste between Android and Linux seamlessly.
 - **Gaming/input Mapping:** Map generic Linux Keyboard inputs to Android touch events instantly.
 - **Automation:** Control Android system setting (Change IP every 1 second, Airplane Mode, Data Cellular), Auto check-in / login Apps via Linux scripts (Python, C++, Rust, etc).
 

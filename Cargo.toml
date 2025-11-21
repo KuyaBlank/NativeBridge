@@ -1,5 +1,6 @@
 [workspace]
 members = [
 "bridge_server",
-"bridge_client"
+"bridge_client",
+"bridge_core"
 ]
