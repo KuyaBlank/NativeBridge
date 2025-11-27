@@ -12,7 +12,7 @@ use bridge_core::{BridgeCommand, BridgeResponse};
 
 // Lokasi socket dillihat dari sisi Android Host
 // Pastikan path ini mengarah ke folder yang bisa dibaca oleh Chroot
-const SOCKET_PATH: &str = "/data/local/tmp/chrootubuntu/tmp/bridge.sock";
+const SOCKET_PATH: &str = "/data/local/ubuntu/tmp/bridge.sock";
 const TOUCH_DEVICE: &str = "/dev/input/event1";
 
 fn main() -> std::io::Result<()> {
