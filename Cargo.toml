@@ -1,7 +1,8 @@
 [workspace]
-resolver ="3"
 members = [
 "bridge_server",
 "bridge_client",
 "bridge_core"
 ]
+
+resolver ="3"

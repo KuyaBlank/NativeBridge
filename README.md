@@ -6,121 +6,159 @@
 [![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Android_ARM64-green?style=flat-square)](https://developer.android.com/)
 
-**NativeBridge** establishes a direct, high-performance communication channel between a Chrooted Linux Environment (Like Ubuntu/Debian on Android) and the Android Host System.
+**NativeBridge** establishes a direct, high-performance communication channel between a Chrooted Linux Environment (like Ubuntu/Debian via Termux) and the Android Host System.
 
 ## Why NativeBridge?
 
-By default, a Chroot Environment is strictly isolated. It lives in a separate filesystem "jail" (/data/local/tmp/chroot) and **cannot access the Android System**, hardware inputs, or global settings.
+By default, a Chroot Environment is strictly isolated. It lives in a separate filesystem "jail" (e.g., `/data/local/tmp/chrootubuntu`) and **cannot access the Android System**, hardware inputs, or global settings.
 
 **NativeBridge solves this by creating a secure tunnel (Unix Domain Socket) that allows you to:**
 
 - **Bypass Isolation:** Execute commands on the Android System directly from your Chroot Terminal.
-- **Access Root Features:** Perform system-level tasks (Screenshots, Input Injection, Hardware Control) that are normally impossible from within Chroot.
-- **Zero Latency:** Built with **Rust** and **Unix Sockets** for instant execution, perfect for automation or input mapping.
+- **Direct Kernel Injection:** Perform high-speed input injection (Tap/Swipe) by writing directly to `/dev/input/event*`, bypassing the heavy Android Framework (Java) for near zero-latency.
+- **Protocol Optimization:** Uses **Bincode** serialization instead of JSON for minimal overhead.
+- **Modular:** Built with Rust workspaces and feature flags to keep binaries small and efficient.
 
 ## Architecture
 
 ```mermaid
 graph LR
-   A[Android Host / Root] -- Unix Socket --> B((Bridge Server))
-   C[Chroot Linux / Client] -- Sends Command --> B
-   B -- Return Output --> C
+   A[Android Host / Root] -- Listens on Unix Socket --> B((Bridge Server))
+   C[Chroot Linux / Client] -- Sends Binary Payload --> B
+   B -- Direct Kernel Write / Shell Exec --> A
+   A -- Returns Output --> C
 ```
 
-- **Server**: Runs on Android Host (Root). it listens for incoming requests.
-- **Client**: Runs inside the Chroot Environment. it sends commands to the Server via the shared socket.
+- **Server (`bridge_server`)**: Runs on Android Host (Root). Listens for incoming requests via a shared socket inside the Chroot path.
+- **Client (`andro`)**: Runs inside the Chroot Environment. Sends commands to the Server.
 
 ## Prerequisites
 
-- **Rooted Android Device** (KernelSu / Magisk / Apatch).
+- **Rooted Android Device** (KernelSu / Magisk / APatch).
 - **Chroot Environment** (Ubuntu, Debian, Kali, Fedora, etc).
-- **Rust Toolchain** (Optional: For build NativeBridge, with `musl` target support for static linking).
+- **Rust Toolchain** (Only if building from source).
 
-## Building
+## Building from Source
 
-Clone the repo and build statically using Musl to ensure compatibility across different environments:
+Since we want to run these binaries on Android, we must build them statically using `musl`.
 
+### 1. Setup Environment
 ```bash
 # Add musl target for ARM64
 rustup target add aarch64-unknown-linux-musl
-
-# Build release Binaries
-cargo build --release --target aarch64-unknown-linux-musl
 ```
 
-## installation
+### 2. Compile
+You have two options depending on your needs:
 
-### Download & Move to your Chroot Environment.
-Simply just download from release and Move
+**Option A: Standard Build (Exec Only)**
+Lightweight, safer, only allows shell execution (`sh -c`).
+```bash
+cargo build --release --target aarch64-unknown-linux-musl --bin bridge_server
+cargo build --release --target aarch64-unknown-linux-musl --bin bridge_client
+```
 
-1. Download bridge_server & andro from release
-2. Move bridge_server to /data/local/tmp/
-3. Give 755 Permission
-6. Run bridge-server in background (/data/local/tmp/bridge_server &)
-4. Move andro to /usr/local/bin in chroot folder
-5. Give 755 Permission
-6. Usage
+**Option B: Full Build (Direct Input Support)**
+Enable `direct_input` feature to allow Tap & Swipe via Kernel Injection.
+*> Note: You may need to configure the `/dev/input/eventX` path in `input_manager.rs` before building.*
+```bash
+cargo build --release --target aarch64-unknown-linux-musl --features "direct_input" --bin bridge_server
+cargo build --release --target aarch64-unknown-linux-musl --features "direct_input" --bin bridge_client
+```
 
-### Build From Source
-This Installation if Build from Source
+---
 
-### 1. Server (Android Host)
-Move the `bridge_server` binary to a location accessible by Root (e.g., `/data/local/tmp`).
+## Installation
+
+### 1. Setup Server (Android Host)
+The server must run outside the Chroot, but the binary is currently inside your build folder.
 
 ```bash
-# in Chroot Environment
-cp ~/NativeBridge/target/aarch64-unknown-linux-musl/release/bridge_server /tmp/bridge_server
+# [Inside Chroot Terminal]
+# Copy binary to a temporary location accessible by Android
+cp target/aarch64-unknown-linux-musl/release/bridge_server /tmp/bridge_server
+```
 
-# in Termux or Android Shell
+Now, open a **separate terminal** (Termux or ADB Shell) that is **NOT** inside Chroot:
+
+```bash
+# [Inside Android Termux/ADB]
 su
-cp /data/local/tmp/{yourchrootnamefolder}/tmp/bridge_server /data/local/tmp/
+# Move to /data/local/tmp (Exec is allowed here)
+cp /data/local/tmp/chrootubuntu/tmp/bridge_server /data/local/tmp/
 chmod +x /data/local/tmp/bridge_server
 
 # Run in background
 /data/local/tmp/bridge_server &
 ```
+*Tip: Use KernelSU `service.d` to auto-start this on boot.*
 
-### 2. Client (Chroot)
-Move the `bridge_client` binary to you binary path inside the Chroot Environment.
+### 2. Setup Client (Chroot)
+The client lives inside your Chroot environment.
 
 ```bash
-# in Chroot Shell
-sudo cp ~/NativeBridge/target/aarch64-unknown-linux-musl/release/bridge_client /usr/local/bin/andro
-sudo chmod +x /usr/local/bin/andro
+# [Inside Chroot Terminal]
+cp target/aarch64-unknown-linux-musl/release/bridge_client /usr/local/bin/andro
+chmod +x /usr/local/bin/andro
 ```
+
+---
 
 ## Usage
 
-Simply call the client binary (alias `andro`) followed by the command you want to execute on the Android Host.
+Simply call `andro` followed by the subcommand.
 
+### 1. General Execution
+Run any command as if you were in the Android Root Shell.
 ```bash
-# Help
-andro --help
-
 # Check User Identity
-andro id
+andro exec id
+# Output: uid=0(root) gid=0(root) ...
 
-# Take a Screenshots
-andro screencap -p > /data/local/tmp/capture.png (or /sdcard)
-
-# Simulate Touch Input (Tap coordinates X Y)
-andro tap 500 500
-
-# Simulate Swipe Input (Swipe Down)
-andro swipe 500 1500 500 500 300
+# Check Battery Status
+andro exec dumpsys battery
 
 # Reboot Device
-andro reboot
-
-# Use normal Shell / Exec
-andro exec dumpsys battery
+andro exec reboot
 ```
 
-## Potential Use Cases
+### 2. Direct Input (Kernel Injection)
+*Requires build with `--features "direct_input"`*
 
-- **Hybrid Workflow:** Copy/Paste between Android and Linux seamlessly.
-- **Gaming/input Mapping:** Map generic Linux Keyboard inputs to Android touch events instantly.
-- **Automation:** Control Android system setting (Change IP every 1 second, Airplane Mode, Data Cellular), Auto check-in / login Apps via Linux scripts (Python, C++, Rust, etc).
+```bash
+# Tap (Instant click at X=500, Y=500)
+andro tap 500 500
+
+# Swipe (Scroll down)
+# Format: swipe <x1> <y1> <x2> <y2> <duration_ms>
+andro swipe 500 1500 500 500 300
+```
+
+### 3. Screenshot
+Capture the Android screen and save it directly to the Chroot filesystem.
+```bash
+# Capture and redirect output to a file
+andro exec screencap -p > /home/user/capture.png
+```
+
+### 4. Utilities
+```bash
+# Check if server is alive
+andro ping
+
+# Show help menu
+andro --help
+```
+
+## Troubleshooting
+
+**"Connection refused" or "No such file or directory"**
+- Ensure `bridge_server` is running on Android Host.
+- Ensure the socket path in `main.rs` matches your Chroot mount point (Default: `/data/local/tmp/chrootubuntu/tmp/bridge.sock`).
+
+**Tap/Swipe not working**
+- Did you build with `--features "direct_input"`?
+- Did you set the correct Touchscreen Device path (e.g., `/dev/input/event2`) in `input_manager.rs` before building? Use `getevent -pl` in Termux to find your specific device event.
 
 ## License
 
