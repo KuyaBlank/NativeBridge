@@ -71,7 +71,7 @@ fn main() -> std::io::Result<()> {
     };
 
     // Kirim
-    let mut stream = UnixStream::connect(SOCKET_PATH).inspect_err(|e| {
+    let mut stream = UnixStream::connect(SOCKET_PATH).inspect_err(|_e| {
         eprintln!("Gagal connect ke {}. Pastikan Server nyala!", SOCKET_PATH);
     })?;
 
